@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <link href="keks.css" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Staatliches&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    </head>
+    <body>
+        <img src="loadscreen.jpg" class="bg-img">
+
+        <div class='top-l'></div>
+        <div class="container">
+            <div class="sv-info">
+                <p class="server-name">Ragekill Network</p>
+                <p class="server-website"><i class="fas fa-home"></i> www.ragekill.pl</p>
+                <p class="server-discord"><i class="fab fa-discord"></i> discord.gg/K2SDT3M</p>
+            </div>
+            <!-- <iframe src="file:///C:/Users/user01/Desktop/f1les/fivem/FXServer/server-data/resources/[local]/[gang_wars]/fq_ls/game.html" frameborder="0"></iframe> -->
+            <div class="l-bar">
+                <img class="l-icon" src="l_icon.gif">
+                <div class="static-el">
+                    <span class="l-text">Loading images</span>
+                    <span id='after-text'></span>
+                </div>  
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            // this will actually restart the loading bar a lot, making multiple loading bars is an exercise to the reader... for now.
+            // for a set of possible events, see https://github.com/citizenfx/fivem/blob/master/code/components/loading-screens-five/src/LoadingScreens.cpp
+            var count = 0;
+            var thisCount = 0;
+            var dots = 0;
+
+            const emoji = {
+                INIT_BEFORE_MAP_LOADED: [ 'text00 🍉' ],
+                INIT_AFTER_MAP_LOADED: [ 'text01 🍋', 'text02 🍊' ],
+                INIT_SESSION: [ 'text03 🍐', 'text04 🍅', 'text05 🍆' ],
+            };
+
+            const handlers = {
+                startInitFunctionOrder(data)
+                {
+                    count = data.count;
+
+                    document.querySelector('.l-text').innerHTML = emoji[data.type][data.order - 1] || '';
+                },
+
+                initFunctionInvoking(data)
+                {
+                    // document.querySelector('.thingy').style.left = '0%';
+                    document.querySelector('.top-l').style.width = ((data.idx / count) * 100) + '%';
+                },
+
+                startDataFileEntries(data)
+                {
+                    count = data.count;
+
+                    // document.querySelector('.letni h3').innerHTML += "\u{1f358}";
+                },
+
+                performMapLoadFunction(data)
+                {
+                    ++thisCount;
+
+                    // document.querySelector('.thingy').style.left = '0%';
+                    document.querySelector('.top-l').style.width = ((thisCount / count) * 100) + '%';
+                },
+
+                onLogLine(data)
+                {
+                    // document.querySelector('.letni p').innerHTML = data.message + "..!";
+                }
+            };
+
+            window.addEventListener('message', function(e)
+            {
+                (handlers[e.data.eventName] || function() {})(e.data);
+            });
+
+            window.calcDots = function() {
+                if (dots < 3) {
+                    dots++;
+                    document.getElementById('after-text').innerHTML += '.';
+                } else {
+                    dots = 0;
+                    document.getElementById('after-text').innerHTML = '';
+                }
+            }
+
+            setInterval(calcDots, 400);
+        </script>
+    </body>
+</html>
